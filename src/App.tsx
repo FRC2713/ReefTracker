@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import './App.css';
 import { BranchLevel } from './components/BranchLevel';
 import { TroughLevel } from './components/TroughLevel';
+import { NT4Context } from './util/nt4-manager.ts';
 
 type OccupancyMap = number[][];
 
@@ -27,8 +28,10 @@ function App() {
   ]);
 
   const [currentTarget, setCurrentTarget] = useState<BranchAddress | null>(
-    null
+    null,
   );
+
+  const nt4manager = useContext(NT4Context);
 
   const handleCurrentTargetClick = useCallback(
     (target: BranchAddress) => {
@@ -38,11 +41,13 @@ function App() {
         currentTarget.index === target.index
       ) {
         setCurrentTarget(null);
+        nt4manager.publishNewGoTo("none");
         return;
       }
+      nt4manager.publishNewGoTo(target.index.toString() + ',' + target.level.toString());
       setCurrentTarget(target);
     },
-    [currentTarget]
+    [currentTarget],
   );
 
   const handleOccupancyChange = useCallback(
@@ -54,7 +59,7 @@ function App() {
       newOccupancyMap[level] = newLevel;
       setOccupancyMap(newOccupancyMap);
     },
-    [occupancyMap]
+    [occupancyMap],
   );
 
   console.log('currentTarget', currentTarget);

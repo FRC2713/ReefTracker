@@ -14,7 +14,7 @@ export function TroughLevel(props: TroughLevelProps) {
   return (
     <>
       <LevelCounter occupancyMap={props.occupancyMap} />
-      {columnLabels.map((label, index) => (
+      {columnLabels.map((_label, index) => (
         <Trough
           key={index}
           occupancy={props.occupancyMap[index]}
