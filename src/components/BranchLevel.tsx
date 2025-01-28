@@ -1,4 +1,5 @@
-import { BranchAddress, columnLabels } from '../App';
+import { BranchAddress } from '../App';
+import { columnLabels } from '../constants';
 import { Branch } from './Branch';
 import { LevelCounter } from './LevelCounter';
 
