@@ -3,6 +3,7 @@ import './App.css';
 import { BranchLevel } from './components/BranchLevel';
 import { TroughLevel } from './components/TroughLevel';
 import { NT4Context } from './util/nt4-manager.ts';
+import { columnLabels } from './constants.ts';
 
 type OccupancyMap = number[][];
 
@@ -10,14 +11,6 @@ export type BranchAddress = {
   level: number;
   index: number;
 };
-export const columnLabels = [
-  ['G', 'H'],
-  ['I', 'J'],
-  ['K', 'L'],
-  ['A', 'B'],
-  ['C', 'D'],
-  ['E', 'F'],
-];
 
 function App() {
   const [occupancyMap, setOccupancyMap] = useState<OccupancyMap>([
@@ -28,7 +21,7 @@ function App() {
   ]);
 
   const [currentTarget, setCurrentTarget] = useState<BranchAddress | null>(
-    null,
+    null
   );
 
   const nt4manager = useContext(NT4Context);
@@ -44,10 +37,12 @@ function App() {
         nt4manager.publishNewGoTo('none');
         return;
       }
-      nt4manager.publishNewGoTo(target.index.toString() + ',' + target.level.toString());
+      nt4manager.publishNewGoTo(
+        target.index.toString() + ',' + target.level.toString()
+      );
       setCurrentTarget(target);
     },
-    [currentTarget],
+    [currentTarget]
   );
 
   const handleOccupancyChange = useCallback(
@@ -59,7 +54,7 @@ function App() {
       newOccupancyMap[level] = newLevel;
       setOccupancyMap(newOccupancyMap);
     },
-    [occupancyMap],
+    [occupancyMap]
   );
 
   const [connected, setConnected] = useState(nt4manager.connected);

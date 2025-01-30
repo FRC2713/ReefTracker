@@ -1,6 +1,7 @@
-import { BranchAddress, columnLabels } from '../App';
+import { BranchAddress } from '../App';
 import { Trough } from './Trough';
 import { LevelCounter } from './LevelCounter';
+import { columnLabels } from '../constants';
 
 type TroughLevelProps = {
   levelIndex: number;
