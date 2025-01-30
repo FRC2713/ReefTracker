@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import './App.css';
 import { BranchLevel } from './components/BranchLevel';
 import { TroughLevel } from './components/TroughLevel';
@@ -41,7 +41,7 @@ function App() {
         currentTarget.index === target.index
       ) {
         setCurrentTarget(null);
-        nt4manager.publishNewGoTo("none");
+        nt4manager.publishNewGoTo('none');
         return;
       }
       nt4manager.publishNewGoTo(target.index.toString() + ',' + target.level.toString());
@@ -61,6 +61,16 @@ function App() {
     },
     [occupancyMap],
   );
+
+  const [connected, setConnected] = useState(nt4manager.connected);
+  useEffect(() => {
+    // Listen to changes in `connected` state
+    const interval = setInterval(() => {
+      setConnected(nt4manager.connected); // Update state when connected changes
+    }, 1000); // Poll every second (or choose a more efficient way)
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, [nt4manager]);
 
   console.log('currentTarget', currentTarget);
 
@@ -115,6 +125,7 @@ function App() {
           onCurrentTargetClick={handleCurrentTargetClick}
         />
       </div>
+      {connected ? (<span className={'text-green-500'}>Connected</span>) : (<span className={'text-red-500'}>NOT CONNECTED</span>)}
     </div>
   );
 }
