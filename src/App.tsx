@@ -37,9 +37,11 @@ function App() {
         nt4manager.publishNewGoTo('none');
         return;
       }
+      nt4manager.publishNewGoTo('none');
+      setTimeout(() => {
       nt4manager.publishNewGoTo(
         target.index.toString() + ',' + target.level.toString()
-      );
+      )}, 100);
       setCurrentTarget(target);
     },
     [currentTarget]
