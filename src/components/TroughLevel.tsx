@@ -19,7 +19,7 @@ export function TroughLevel(props: TroughLevelProps) {
         <Trough
           key={index}
           occupancy={props.occupancyMap[index]}
-          index={index}
+          index={index * 2}
           level={0}
           onOccupancyChange={props.onOccupancyChange}
           currentTarget={props.currentTarget}
