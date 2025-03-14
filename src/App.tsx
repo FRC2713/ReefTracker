@@ -70,7 +70,7 @@ function App() {
           </Canvas2D>
         </div>
       </div>
-      <DebugPanel connected={connected} lastGotoPublished={lastGotoPublished} />
+      <DebugPanel address={address} connected={connected} lastGotoPublished={lastGotoPublished} />
     </div>
   );
 }
