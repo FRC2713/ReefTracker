@@ -8,11 +8,16 @@ export class Nt4Manager {
   private warned: boolean = false;
   private server: NT4_Client;
   private _connected: boolean = false;
+  private _address: string = 'localhost';
   private connectionListeners: ConnectionListener[] = [];
 
   // Getter for the connected property
   get connected(): boolean {
     return this._connected;
+  }
+
+  get address(): string {
+    return this._address;
   }
 
   // Method to subscribe to connection changes
@@ -40,23 +45,27 @@ export class Nt4Manager {
       team.toString().substring(0, 2),
       team.toString().substring(2),
     ];
-    this.server = new NT4_Client(
+
+    this._address =
       process.env.NODE_ENV === 'development'
         ? 'localhost'
-        : `10.${teamSplit[0]}.${teamSplit[1]}.2`,
+        : `10.${teamSplit[0]}.${teamSplit[1]}.2`;
+
+    this.server = new NT4_Client(
+      this._address,
       'scoreassist',
       () => {},
       () => {},
       () => {},
       () => {
-        console.log('Connected to NT4 server');
+        // console.log('Connected to NT4 server');
         this.warned = false;
         // TODO: Ensure temporarily losing network connection to the same server doesn't cause a crash
         this.server.publishNewTopic('/scoreassist/goto', 'string');
         this.setConnected(true);
       },
       () => {
-        if (!this.warned) console.error("Can't connect to NT");
+        // Connection error handler
         this.warned = true;
         this.setConnected(false);
       }

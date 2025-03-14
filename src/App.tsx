@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState, useMemo } from 'react';
 import './App.css';
 import { NT4Context } from './util/nt4-manager.ts';
 import { Canvas2D } from './components/Canvas2D';
@@ -41,31 +41,49 @@ function App() {
   );
 
   const [connected, setConnected] = useState(nt4manager.connected);
+  const [address, setAddress] = useState(nt4manager.address);
   useEffect(() => {
     // Subscribe to connection state changes
-    const unsubscribe = nt4manager.onConnectionChange(setConnected);
+    const unsubscribe = nt4manager.onConnectionChange((connected) => {
+      console.log('connected', connected);
+      setConnected(connected);
+      setAddress(nt4manager.address);
+    });
 
     // Cleanup subscription on unmount
     return () => unsubscribe();
   }, [nt4manager]);
 
-  console.log('currentTarget', currentTarget);
+  // Memoize props for child components to prevent unnecessary re-renders
+  const sceneProps = useMemo(
+    () => ({
+      gridSize: 10,
+      gridDivisions: 10,
+      onBranchClick: handleCurrentTargetClick,
+      currentTarget,
+    }),
+    [handleCurrentTargetClick, currentTarget]
+  );
+
+  const debugPanelProps = useMemo(
+    () => ({
+      address,
+      connected,
+      lastGotoPublished,
+    }),
+    [address, connected, lastGotoPublished]
+  );
 
   return (
     <div className="w-full h-full flex flex-col p-4">
       <div className="w-full h-full flex flex-col">
         <div className="flex-grow">
           <Canvas2D>
-            <Scene2D
-              gridSize={10}
-              gridDivisions={10}
-              onBranchClick={handleCurrentTargetClick}
-              currentTarget={currentTarget}
-            />
+            <Scene2D {...sceneProps} />
           </Canvas2D>
         </div>
       </div>
-      <DebugPanel connected={connected} lastGotoPublished={lastGotoPublished} />
+      <DebugPanel {...debugPanelProps} />
     </div>
   );
 }

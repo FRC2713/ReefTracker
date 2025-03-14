@@ -1,6 +1,6 @@
-import express, { Request, Response } from 'express';
-import cors from 'cors';
 import bodyParser from 'body-parser';
+import cors from 'cors';
+import express, { Request, Response } from 'express';
 
 const app = express();
 const port = process.env.PORT || 5000;
