@@ -1,12 +1,12 @@
 import { Canvas } from '@react-three/fiber';
 import { OrthographicCamera, OrbitControls } from '@react-three/drei';
-import { ReactNode } from 'react';
+import { ReactNode, memo } from 'react';
 
 export interface Canvas2DProps {
   children: ReactNode;
 }
 
-export function Canvas2D({ children }: Canvas2DProps) {
+function Canvas2DComponent({ children }: Canvas2DProps) {
   return (
     <div className="w-full h-full">
       <Canvas
@@ -29,3 +29,6 @@ export function Canvas2D({ children }: Canvas2DProps) {
     </div>
   );
 }
+
+// Export a memoized version of the component
+export const Canvas2D = memo(Canvas2DComponent);

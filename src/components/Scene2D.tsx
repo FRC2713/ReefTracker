@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback, memo } from 'react';
 import { Mesh } from 'three';
 import { Reef } from './Reef';
 import { BranchAddress } from '../App';
@@ -11,7 +11,7 @@ export interface Scene2DProps {
   currentTarget: BranchAddress | null;
 }
 
-export function Scene2D({
+function Scene2DComponent({
   gridSize = 10,
   gridDivisions = 10,
   onBranchClick,
@@ -20,14 +20,18 @@ export function Scene2D({
   const gridRef = useRef<Mesh>(null);
   const [level, setLevel] = useState<number>(4);
 
-  const handleBranchClick = (branch: number | null) => {
-    console.log('branch', branch);
-    if (branch === null) {
-      onBranchClick(null);
-    } else {
-      onBranchClick({ level: level, index: branch });
-    }
-  };
+  // Memoize the handleBranchClick function to prevent unnecessary re-renders
+  const handleBranchClick = useCallback(
+    (branch: number | null) => {
+      // console.log('branch', branch);
+      if (branch === null) {
+        onBranchClick(null);
+      } else {
+        onBranchClick({ level: level, index: branch });
+      }
+    },
+    [level, onBranchClick]
+  );
 
   useEffect(() => {
     if (currentTarget) {
@@ -59,3 +63,6 @@ export function Scene2D({
     </group>
   );
 }
+
+// Export a memoized version of the component to prevent unnecessary re-renders
+export const Scene2D = memo(Scene2DComponent);

@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 
 interface DebugPanelProps {
   address: string;
@@ -6,7 +6,7 @@ interface DebugPanelProps {
   lastGotoPublished: string;
 }
 
-export const DebugPanel: FC<DebugPanelProps> = ({
+const DebugPanelComponent: FC<DebugPanelProps> = ({
   address,
   connected,
   lastGotoPublished,
@@ -31,3 +31,6 @@ export const DebugPanel: FC<DebugPanelProps> = ({
     </div>
   );
 };
+
+// Export a memoized version of the component
+export const DebugPanel = memo(DebugPanelComponent);
