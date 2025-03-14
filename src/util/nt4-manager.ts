@@ -8,11 +8,16 @@ export class Nt4Manager {
   private warned: boolean = false;
   private server: NT4_Client;
   private _connected: boolean = false;
+  private _address: string = 'localhost'; 
   private connectionListeners: ConnectionListener[] = [];
 
   // Getter for the connected property
   get connected(): boolean {
     return this._connected;
+  }
+
+  get address(): string {
+    return this._address;
   }
 
   // Method to subscribe to connection changes
@@ -40,10 +45,14 @@ export class Nt4Manager {
       team.toString().substring(0, 2),
       team.toString().substring(2),
     ];
+
+    this._address = process.env.NODE_ENV === 'development' 
+    ? `10.${teamSplit[0]}.${teamSplit[1]}.2` // 'localhost'
+    : `10.${teamSplit[0]}.${teamSplit[1]}.2`;
+
+
     this.server = new NT4_Client(
-      process.env.NODE_ENV === 'development'
-        ? 'localhost'
-        : `10.${teamSplit[0]}.${teamSplit[1]}.2`,
+      this._address,
       'scoreassist',
       () => {},
       () => {},

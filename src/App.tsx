@@ -41,9 +41,14 @@ function App() {
   );
 
   const [connected, setConnected] = useState(nt4manager.connected);
+  const [address, setAddress] = useState(nt4manager.address)
   useEffect(() => {
     // Subscribe to connection state changes
-    const unsubscribe = nt4manager.onConnectionChange(setConnected);
+    const unsubscribe = nt4manager.onConnectionChange((connected) => {
+      setConnected(connected);
+      setAddress(nt4manager.address)
+    }
+    );
 
     // Cleanup subscription on unmount
     return () => unsubscribe();
