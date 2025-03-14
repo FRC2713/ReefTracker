@@ -60,6 +60,30 @@ function GameHudComponent({
     [setCurrentTarget]
   );
 
+  // Get the text color based on the current level
+  const getLevelTextColor = useCallback(() => {
+    if (!level) return 'text-white';
+
+    switch (level) {
+      case 4:
+        return 'text-red-600';
+      case 3:
+        return 'text-orange-500';
+      case 2:
+        return 'text-yellow-500';
+      case 1:
+        return 'text-green-500';
+      default:
+        return 'text-white';
+    }
+  }, [level]);
+
+  // Memoize the branch name text color
+  const branchNameTextColor = useMemo(
+    () => getLevelTextColor(),
+    [getLevelTextColor]
+  );
+
   // Memoize button class names
   const level4ClassName = useMemo(
     () =>
@@ -111,7 +135,9 @@ function GameHudComponent({
           <div className="flex flex-col gap-3 bg-black/70 p-3 rounded-lg w-40">
             <h1 className="text-xl font-bold">Target Branch</h1>
             {branchName ? (
-              <p className="text-2xl font-bold text-yellow-400">{branchName}</p>
+              <p className={`text-4xl font-bold ${branchNameTextColor}`}>
+                {branchName}
+              </p>
             ) : (
               <p className="text-lg italic opacity-75">none</p>
             )}
