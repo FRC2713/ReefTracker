@@ -37,7 +37,7 @@ const ReefComponent = ({
     <group position={position} rotation={rotation} {...groupProps}>
       <group>
         <mesh position={[0, 0, 0]}>
-          <circleGeometry args={[1.6636165864 / 2, 6]} />
+          <circleGeometry args={[1.92 / 2, 6]} />
           <meshLambertMaterial color="#CCCCCC" />
         </mesh>
       </group>
