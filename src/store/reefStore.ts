@@ -1,17 +1,30 @@
 import { create } from 'zustand';
-import { ReefAddress } from '../App';
 import { Nt4Manager } from '../util/nt4-manager';
 
+export enum ScoreAssistGoalType {
+  CORAL = 1,
+  ALGAE = 2,
+  CAGE = 3,
+  PROCESSOR = 4,
+  BARGE = 5,
+}
+
+export type ScoreAssistAddress = {
+  type: ScoreAssistGoalType;
+  level: number;
+  index: number;
+};
+
 interface ReefState {
-  currentTarget: ReefAddress | null;
+  currentTarget: ScoreAssistAddress | null;
   lastGotoPublished: string;
   connected: boolean;
   address: string;
 
   // Actions
-  setCurrentTarget: (target: ReefAddress | null) => void;
+  setCurrentTarget: (target: ScoreAssistAddress | null) => void;
   setLevel: (level: number) => void;
-  updateTarget: (target: Partial<ReefAddress>) => void;
+  updateTarget: (target: Partial<ScoreAssistAddress>) => void;
   setConnected: (connected: boolean) => void;
   setAddress: (address: string) => void;
 }
@@ -24,7 +37,7 @@ export const createReefStore = (nt4manager: Nt4Manager) =>
     connected: nt4manager.connected,
     address: nt4manager.address,
 
-    setCurrentTarget: (target: ReefAddress | null) => {
+    setCurrentTarget: (target: ScoreAssistAddress | null) => {
       console.log('setCurrentTarget', target);
       if (!target) {
         nt4manager.publishNewGoTo('none');
@@ -40,12 +53,12 @@ export const createReefStore = (nt4manager: Nt4Manager) =>
       });
     },
 
-    updateTarget: (target: Partial<ReefAddress>) => {
+    updateTarget: (target: Partial<ScoreAssistAddress>) => {
       const currentTarget = get().currentTarget;
       const setCurrentTarget = get().setCurrentTarget;
 
       if (!currentTarget) {
-        setCurrentTarget({ type: 0, index: 0, level: 0 });
+        setCurrentTarget(null);
       } else {
         setCurrentTarget({ ...currentTarget, ...target });
       }
@@ -56,7 +69,7 @@ export const createReefStore = (nt4manager: Nt4Manager) =>
       const setCurrentTarget = get().setCurrentTarget;
 
       if (!currentTarget) {
-        setCurrentTarget({ type: 0, index: 0, level });
+        setCurrentTarget(null);
       } else {
         setCurrentTarget({ ...currentTarget, level });
       }

@@ -1,4 +1,4 @@
-import { ScoreAssistGoalType } from '../App';
+import { ScoreAssistGoalType } from '../store/reefStore';
 import { useRef, useEffect, useCallback, useState, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';

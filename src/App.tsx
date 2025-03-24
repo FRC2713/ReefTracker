@@ -4,21 +4,6 @@ import { Scene2D } from './components/Scene2D';
 import { DebugPanel } from './components/DebugPanel';
 import { useReefStore } from './store/useReefStore';
 
-export enum ScoreAssistGoalType {
-  NONE = 0,
-  CORAL = 1,
-  ALGAE = 2,
-  CAGE = 3,
-  PROCESSOR = 4,
-  BARGE = 5,
-}
-
-export type ReefAddress = {
-  type: ScoreAssistGoalType;
-  level: number;
-  index: number;
-};
-
 function App() {
   const store = useReefStore();
   const { lastGotoPublished, connected, address } = store();

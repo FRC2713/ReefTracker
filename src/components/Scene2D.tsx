@@ -2,6 +2,8 @@ import { useRef } from 'react';
 import { Mesh } from 'three';
 import { Reef } from './Reef';
 import { GameHud } from './GameHud';
+import { Barge } from './Barge';
+import { Processor } from './Processor';
 
 export interface Scene2DProps {
   gridSize?: number;
@@ -22,7 +24,9 @@ function Scene2DComponent({ gridSize = 10, gridDivisions = 10 }: Scene2DProps) {
           position={[0, 0, -0.1]}
         />
 
+        <Barge />
         <Reef />
+        <Processor />
       </group>
     </group>
   );
