@@ -1,5 +1,5 @@
 import { MapPin, MinusCircle, PlusCircle } from 'lucide-react';
-import { BranchAddress } from '../App';
+import { ReefAddress } from '../App';
 import { cn } from '../util/cn';
 
 export type TroupProps = {
@@ -7,8 +7,8 @@ export type TroupProps = {
   index: number;
   occupancy: number;
   onOccupancyChange: (level: number, index: number, count: number) => void;
-  currentTarget: BranchAddress | null;
-  onCurrentTargetClick: (target: BranchAddress) => void;
+  currentTarget: ReefAddress | null;
+  onCurrentTargetClick: (target: ReefAddress) => void;
 };
 
 export function Trough(props: TroupProps) {

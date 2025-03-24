@@ -1,4 +1,4 @@
-import { BranchAddress } from '../App';
+import { ReefAddress } from '../App';
 import { columnLabels } from '../constants';
 import { Branch } from './Branch';
 import { LevelCounter } from './LevelCounter';
@@ -7,8 +7,8 @@ type LevelProps = {
   levelIndex: number;
   occupancyMap: number[];
   onOccupancyChange: (level: number, index: number, count: number) => void;
-  currentTarget: BranchAddress | null;
-  onCurrentTargetClick: (target: BranchAddress) => void;
+  currentTarget: ReefAddress | null;
+  onCurrentTargetClick: (target: ReefAddress) => void;
 };
 
 export function BranchLevel({

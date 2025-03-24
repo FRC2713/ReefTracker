@@ -80,7 +80,7 @@ export class NT4_Topic {
     if (this.type in typestrIdxLookup) {
       return typestrIdxLookup[this.type];
     } else {
-      return 5; // Default to binary
+      return this.type;
     }
   }
 }

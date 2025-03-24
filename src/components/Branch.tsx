@@ -1,5 +1,5 @@
 import { MapPin } from 'lucide-react';
-import { BranchAddress } from '../App';
+import { ReefAddress } from '../App';
 import { cn } from '../util/cn';
 
 type BranchProps = {
@@ -7,24 +7,24 @@ type BranchProps = {
   index: number;
   occupancy: number;
   onOccupancyChange: (level: number, index: number, count: number) => void;
-  currentTarget: BranchAddress | null;
-  onCurrentTargetClick: (target: BranchAddress) => void;
+  currentTarget: ReefAddress | null;
+  onCurrentTargetClick: (target: ReefAddress) => void;
 };
 
 export function Branch({
-                         level,
-                         index,
-                         occupancy,
-                         onOccupancyChange,
-                         currentTarget,
-                         onCurrentTargetClick,
-                       }: BranchProps) {
+  level,
+  index,
+  occupancy,
+  onOccupancyChange,
+  currentTarget,
+  onCurrentTargetClick,
+}: BranchProps) {
   const isCurrentTarget =
     currentTarget?.level === level && currentTarget.index === index;
   return (
     <div
       className={cn(
-        'w-full h-full rounded flex flex-col items-center justify-center select-none bg-zinc-900',
+        'w-full h-full rounded flex flex-col items-center justify-center select-none bg-zinc-900'
       )}
     >
       <div
@@ -34,14 +34,14 @@ export function Branch({
         <div
           className={cn(
             'w-12 h-12 bg-violet-500 rounded-full outline outline-8 outline-offset-4',
-            occupancy ? ' outline-white' : ' outline-transparent',
+            occupancy ? ' outline-white' : ' outline-transparent'
           )}
         />
       </div>
       <div
         className={cn(
           'w-full h-full flex justify-center items-center rounded',
-          isCurrentTarget ? 'bg-red-600' : 'bg-red-600/0',
+          isCurrentTarget ? 'bg-red-600' : 'bg-red-600/0'
         )}
         onClick={() => {
           onCurrentTargetClick({ level, index });
@@ -52,7 +52,7 @@ export function Branch({
             'h-10 w-10',
             isCurrentTarget
               ? 'text-white animate-ping'
-              : 'text-white/20 animate-none',
+              : 'text-white/20 animate-none'
           )}
         />
       </div>

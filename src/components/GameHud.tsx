@@ -1,54 +1,16 @@
 import { Hud, OrthographicCamera, Html } from '@react-three/drei';
-import { BranchAddress } from '../App';
 import { memo, useCallback, useMemo } from 'react';
+import { useReefStore } from '../store/useReefStore';
 
-interface GameHudProps {
-  level: number | null;
-  setLevel: (level: number) => void;
-  setCurrentTarget: (target: BranchAddress | null) => void;
-  currentTarget: BranchAddress | null;
-}
+function GameHudComponent() {
+  const store = useReefStore();
+  const { currentTarget, setLevel, setCurrentTarget } = store();
 
-function translateBranch(branch: BranchAddress): string {
-  let frontBack = 'F';
-  let leftCenterRight = 'L';
-  let branchNum = 1;
-
-  if (branch.index > 3 && branch.index < 10) {
-    frontBack = 'B';
-  }
-
-  if (branch.index > 7) {
-    leftCenterRight = 'R';
-  }
-
-  if ([0, 1, 6, 7].includes(branch.index)) {
-    leftCenterRight = 'C';
-  }
-
-  if (branch.index % 2 === 0) {
-    branchNum = 2;
-  }
-
-  return `${frontBack}${leftCenterRight}${branchNum}-L${branch.level}`;
-}
-
-function GameHudComponent({
-  level,
-  setLevel,
-  currentTarget,
-  setCurrentTarget,
-}: GameHudProps) {
   // Function to determine if a level button is active
   const isActiveLevel = useCallback(
-    (buttonLevel: number) => level === buttonLevel,
-    [level]
+    (buttonLevel: number) => currentTarget?.level === buttonLevel,
+    [currentTarget]
   );
-
-  // Memoize the translated branch name
-  const branchName = useMemo(() => {
-    return currentTarget ? translateBranch(currentTarget) : null;
-  }, [currentTarget]);
 
   // Memoize level button handlers
   const handleLevel4Click = useCallback(() => setLevel(4), [setLevel]);
@@ -58,30 +20,6 @@ function GameHudComponent({
   const handleClearClick = useCallback(
     () => setCurrentTarget(null),
     [setCurrentTarget]
-  );
-
-  // Get the text color based on the current level
-  const getLevelTextColor = useCallback(() => {
-    if (!level) return 'text-white';
-
-    switch (level) {
-      case 4:
-        return 'text-red-600';
-      case 3:
-        return 'text-orange-500';
-      case 2:
-        return 'text-yellow-500';
-      case 1:
-        return 'text-green-500';
-      default:
-        return 'text-white';
-    }
-  }, [level]);
-
-  // Memoize the branch name text color
-  const branchNameTextColor = useMemo(
-    () => getLevelTextColor(),
-    [getLevelTextColor]
   );
 
   // Memoize button class names
@@ -128,22 +66,7 @@ function GameHudComponent({
   return (
     <Hud>
       <OrthographicCamera makeDefault position={[0, 0, 4]} />
-      <group
-        position={[-window.innerWidth / 2 + 50, window.innerHeight / 2 - 50, 0]}
-      >
-        <Html>
-          <div className="flex flex-col gap-3 bg-black/70 p-3 rounded-lg w-40">
-            <h1 className="text-xl font-bold">Target Branch</h1>
-            {branchName ? (
-              <p className={`text-4xl font-bold ${branchNameTextColor}`}>
-                {branchName}
-              </p>
-            ) : (
-              <p className="text-lg italic opacity-75">none</p>
-            )}
-          </div>
-        </Html>
-      </group>
+
       <group position={[0, 0, 0]}>
         <Html center>
           <div className="flex flex-col gap-3 bg-black/70 p-3 rounded-lg w-40">

@@ -14,7 +14,7 @@ function Canvas2DComponent({ children }: Canvas2DProps) {
         className="w-full h-full"
         style={{ background: '#333333' }}
       >
-        <OrthographicCamera makeDefault position={[0, 0, 4]} zoom={500}>
+        <OrthographicCamera makeDefault position={[0, 0, 4]} zoom={400}>
           <pointLight intensity={1} position={[0, 0, 0]} />
         </OrthographicCamera>
         <OrbitControls
