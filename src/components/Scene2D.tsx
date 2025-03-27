@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback, memo } from 'react';
+import { useEffect, useRef, useState, useCallback, memo, useMemo } from 'react';
 import { Mesh } from 'three';
 import { Reef } from './Reef';
 import { BranchAddress } from '../App';
@@ -9,6 +9,8 @@ export interface Scene2DProps {
   gridDivisions?: number;
   onBranchClick: (branch: BranchAddress | null) => void;
   currentTarget: BranchAddress | null;
+  onClimbPrepClick: () => void;
+  climbPrep: boolean
 }
 
 function Scene2DComponent({
@@ -16,6 +18,8 @@ function Scene2DComponent({
   gridDivisions = 10,
   onBranchClick,
   currentTarget,
+  onClimbPrepClick,
+  climbPrep
 }: Scene2DProps) {
   const gridRef = useRef<Mesh>(null);
   const [level, setLevel] = useState<number>(4);
@@ -33,6 +37,16 @@ function Scene2DComponent({
     [level, onBranchClick]
   );
 
+  const handleClimbPrepClick = useCallback(
+    () => {
+      onClimbPrepClick();
+    }, [climbPrep, onClimbPrepClick]
+  )
+
+  const isClimbing = useMemo(
+    () => climbPrep, [climbPrep]
+  )
+
   useEffect(() => {
     if (currentTarget) {
       onBranchClick({
@@ -49,6 +63,8 @@ function Scene2DComponent({
         setLevel={setLevel}
         currentTarget={currentTarget}
         setCurrentTarget={onBranchClick}
+        onClimbPrepClick={handleClimbPrepClick}
+        climbPrep={isClimbing}
       />
       <group>
         <gridHelper

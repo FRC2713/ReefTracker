@@ -19,7 +19,6 @@ function App() {
 
   const nt4manager = useContext(NT4Context);
 
-  // These handlers are currently unused but kept for future implementation
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleCurrentTargetClick = useCallback(
     (target: BranchAddress | null) => {
@@ -42,6 +41,16 @@ function App() {
 
   const [connected, setConnected] = useState(nt4manager.connected);
   const [address, setAddress] = useState(nt4manager.address);
+  const [climbPrep, setClimbPrep] = useState(false);
+  
+
+  const handleClimbPrepClick = useCallback(
+    () => { 
+        nt4manager.publishClimbPrep(!climbPrep)
+        setClimbPrep(!climbPrep)
+    }, [climbPrep]
+  )
+
   useEffect(() => {
     // Subscribe to connection state changes
     const unsubscribe = nt4manager.onConnectionChange((connected) => {
@@ -61,8 +70,10 @@ function App() {
       gridDivisions: 10,
       onBranchClick: handleCurrentTargetClick,
       currentTarget,
+      onClimbPrepClick: handleClimbPrepClick,
+      climbPrep
     }),
-    [handleCurrentTargetClick, currentTarget]
+    [handleCurrentTargetClick, currentTarget, climbPrep, handleClimbPrepClick]
   );
 
   const debugPanelProps = useMemo(
@@ -70,8 +81,9 @@ function App() {
       address,
       connected,
       lastGotoPublished,
+      climbPrep
     }),
-    [address, connected, lastGotoPublished]
+    [address, connected, lastGotoPublished, climbPrep]
   );
 
   return (

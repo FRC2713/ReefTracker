@@ -16,7 +16,7 @@ interface BranchProps {
   isCurrentTarget: boolean;
   branchNumber: number;
   onClick: (branchNumber: number | null) => void;
-  level: number | null;
+  level: number | undefined;
 }
 
 // Create a shared animation clock to avoid redundant calculations
