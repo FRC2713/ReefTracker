@@ -1,4 +1,5 @@
-import { useContext, useEffect } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { useContext, useEffect, useState } from 'react';
 import { NT4Context } from '../util/nt4-manager';
 import { createReefStore } from './reefStore';
 
@@ -27,4 +28,17 @@ export const useReefStore = () => {
   }, [nt4manager, store]);
 
   return store;
+};
+
+// Create a shared animation factor to avoid redundant calculations
+export const useAnimationFactor = () => {
+  const [factor, setFactor] = useState(1);
+
+  // Only run one animation frame handler for all branches
+  useFrame(() => {
+    const pulseFactor = Math.sin(Date.now() * 0.01) * 0.2 + 1.2;
+    setFactor(pulseFactor);
+  });
+
+  return factor;
 };

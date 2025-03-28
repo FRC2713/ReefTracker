@@ -1,6 +1,9 @@
 import { Html } from '@react-three/drei';
 import { useReefStore } from '../store/useReefStore';
 import { ScoreAssistGoalType } from '../store/reefStore';
+import { useThree } from '@react-three/fiber';
+import { useMemo } from 'react';
+
 export interface BargeProps {
   position?: [number, number, number];
   rotation?: [number, number, number];
@@ -11,9 +14,19 @@ export function Barge({
   rotation = [0, 0, 0],
   ...groupProps
 }: BargeProps) {
+  const { camera } = useThree();
+
+  // Calculate scale based on camera zoom
+  const scale = useMemo(() => {
+    // Assuming default camera position is at z=4 (from Canvas2D.tsx)
+    const defaultZoom = 0.125;
+    const currentZoom = camera.position.z;
+    return defaultZoom / currentZoom;
+  }, [camera.position.z]);
+
   return (
     <group position={position} rotation={rotation} {...groupProps}>
-      <Html>
+      <Html transform scale={scale}>
         <div className="flex flex-col items-center gap-8 w-[450px] text-4xl">
           <BargeButton />
           <div className="flex flex-row justify-between gap-4 w-full px-6">
