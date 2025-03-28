@@ -24,7 +24,7 @@ interface ReefState {
   // Actions
   setCurrentTarget: (target: ScoreAssistAddress | null) => void;
   setLevel: (level: number) => void;
-  updateTarget: (target: Partial<ScoreAssistAddress>) => void;
+  updateTarget: (target: Pick<ScoreAssistAddress, 'index' | 'type'>) => void;
   setConnected: (connected: boolean) => void;
   setAddress: (address: string) => void;
 }
@@ -53,15 +53,17 @@ export const createReefStore = (nt4manager: Nt4Manager) =>
       });
     },
 
-    updateTarget: (target: Partial<ScoreAssistAddress>) => {
+    updateTarget: (
+      target: Pick<ScoreAssistAddress, 'index' | 'type'> & { level?: number }
+    ) => {
       const currentTarget = get().currentTarget;
       const setCurrentTarget = get().setCurrentTarget;
 
-      if (!currentTarget) {
-        setCurrentTarget(null);
-      } else {
-        setCurrentTarget({ ...currentTarget, ...target });
-      }
+      setCurrentTarget({
+        type: target.type,
+        index: target.index,
+        level: target.level || currentTarget?.level || 4,
+      });
     },
 
     setLevel: (level: number) => {

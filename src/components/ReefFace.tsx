@@ -112,15 +112,16 @@ function StaticBranch({
   branchNumber,
 }: Omit<BranchProps, 'isCurrentTarget' | 'level'>) {
   const store = useReefStore();
-  const { updateTarget } = store();
+  const { setCurrentTarget, currentTarget } = store();
 
   // Memoize click handler to prevent unnecessary re-renders
   const handleClick = useCallback(() => {
-    updateTarget({
+    setCurrentTarget({
       type: ScoreAssistGoalType.CORAL,
       index: branchNumber,
+      level: currentTarget?.level || 4,
     });
-  }, [branchNumber, updateTarget]);
+  }, [branchNumber, setCurrentTarget, currentTarget]);
 
   return (
     <group position={position}>
