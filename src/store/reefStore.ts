@@ -20,6 +20,7 @@ interface ReefState {
   lastGotoPublished: string;
   connected: boolean;
   address: string;
+  climbPrep: boolean;
 
   // Actions
   setCurrentTarget: (target: ScoreAssistAddress | null) => void;
@@ -27,6 +28,7 @@ interface ReefState {
   updateTarget: (target: Pick<ScoreAssistAddress, 'index' | 'type'>) => void;
   setConnected: (connected: boolean) => void;
   setAddress: (address: string) => void;
+  setClimbPrep: (climbPrep: boolean) => void;
 }
 
 // This lets us accept an NT4 manager during store initialization for testing/mocking
@@ -36,7 +38,7 @@ export const createReefStore = (nt4manager: Nt4Manager) =>
     lastGotoPublished: 'none',
     connected: nt4manager.connected,
     address: nt4manager.address,
-
+    climbPrep: false,
     setCurrentTarget: (target: ScoreAssistAddress | null) => {
       console.log('setCurrentTarget', target);
       if (!target) {
@@ -79,4 +81,8 @@ export const createReefStore = (nt4manager: Nt4Manager) =>
 
     setConnected: (connected: boolean) => set({ connected }),
     setAddress: (address: string) => set({ address }),
+    setClimbPrep: (climbPrep: boolean) => {
+      nt4manager.publishClimbPrep(climbPrep);
+      set({ climbPrep });
+    },
   }));

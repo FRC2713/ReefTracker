@@ -1,15 +1,28 @@
-import { Hud, OrthographicCamera, Html } from '@react-three/drei';
-import { memo, useCallback } from 'react';
+import { Html, Hud, OrthographicCamera } from '@react-three/drei';
+import { useCallback, useMemo } from 'react';
 import { useReefStore } from '../store/useReefStore';
 
-function GameHudComponent() {
+export function GameHud() {
   const store = useReefStore();
-  const { setCurrentTarget } = store();
+  const { setCurrentTarget, setClimbPrep, climbPrep } = store();
   const handleClearClick = useCallback(
     () => setCurrentTarget(null),
     [setCurrentTarget]
   );
+  const handleClimbPrepClick = useCallback(
+    () => setClimbPrep(!climbPrep),
+    [setClimbPrep, climbPrep]
+  );
 
+  const climbPrepClassName = useMemo(
+    () =>
+      `px-6 py-3 text-xl font-bold rounded-lg transition-all duration-150 ${
+        climbPrep
+          ? 'bg-green-500 text-white scale-110 shadow-lg shadow-green-500/50'
+          : 'bg-gray-700 text-white'
+      }`,
+    [climbPrep]
+  );
   return (
     <Hud>
       <OrthographicCamera makeDefault position={[0, 0, 4]} />
@@ -22,12 +35,18 @@ function GameHudComponent() {
         ]}
       >
         <Html>
-          <div className="flex flex-col gap-3 bg-black/70 p-3 rounded-lg">
+          <div className="flex flex-row gap-16 bg-black/70 p-3 rounded-lg">
             <button
               onClick={handleClearClick}
               className="px-6 py-3 text-xl font-bold rounded-lg transition-all duration-150 bg-gray-700 text-white hover:bg-red-500"
             >
               CLEAR
+            </button>
+            <button
+              onClick={handleClimbPrepClick}
+              className={climbPrepClassName}
+            >
+              CLIMB PREP
             </button>
           </div>
         </Html>
@@ -35,6 +54,3 @@ function GameHudComponent() {
     </Hud>
   );
 }
-
-// Export a memoized version of the component
-export const GameHud = memo(GameHudComponent);
