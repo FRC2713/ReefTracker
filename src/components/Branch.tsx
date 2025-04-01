@@ -1,61 +1,137 @@
-import { MapPin } from 'lucide-react';
-import { BranchAddress } from '../App';
-import { cn } from '../util/cn';
+import { useRef, useEffect, useCallback, useMemo } from 'react';
+import * as THREE from 'three';
+import { useReefStore } from '../store/useReefStore';
+import { ScoreAssistGoalType } from '../store/reefStore';
+import { useAnimationFactor } from '../store/useReefStore';
 
-type BranchProps = {
-  level: number;
-  index: number;
-  occupancy: number;
-  onOccupancyChange: (level: number, index: number, count: number) => void;
-  currentTarget: BranchAddress | null;
-  onCurrentTargetClick: (target: BranchAddress) => void;
-};
+export interface BranchProps {
+  position: [number, number, number];
+  branchNumber: number;
+}
 
-export function Branch({
-                         level,
-                         index,
-                         occupancy,
-                         onOccupancyChange,
-                         currentTarget,
-                         onCurrentTargetClick,
-                       }: BranchProps) {
-  const isCurrentTarget =
-    currentTarget?.level === level && currentTarget.index === index;
+// Optimized static branch that doesn't animate
+function StaticBranch({ position, branchNumber }: BranchProps) {
+  const store = useReefStore();
+  const { setCurrentTarget, currentTarget } = store();
+  const meshRef = useRef<THREE.Mesh>(null);
+  const pulseFactor = useAnimationFactor();
+
+  const isCurrentTarget = useMemo(
+    () =>
+      currentTarget?.type === ScoreAssistGoalType.CORAL &&
+      currentTarget.index === branchNumber,
+    [currentTarget, branchNumber]
+  );
+
+  useEffect(() => {
+    if (meshRef.current) {
+      const material = meshRef.current.material as THREE.MeshStandardMaterial;
+      material.color.set(isCurrentTarget ? '#FFF000' : '#C4618C');
+    }
+  }, [isCurrentTarget]);
+
+  // Apply the animation factor directly
+  useEffect(() => {
+    if (meshRef.current && isCurrentTarget) {
+      meshRef.current.scale.set(pulseFactor, pulseFactor, pulseFactor);
+    }
+  }, [pulseFactor, isCurrentTarget]);
+
+  // Memoize click handler to prevent unnecessary re-renders
+  const handleClick = useCallback(() => {
+    setCurrentTarget({
+      type: ScoreAssistGoalType.CORAL,
+      index: branchNumber,
+      level: currentTarget?.level || 4,
+    });
+  }, [branchNumber, setCurrentTarget, currentTarget]);
+
   return (
-    <div
-      className={cn(
-        'w-full h-full rounded flex flex-col items-center justify-center select-none bg-zinc-900',
-      )}
-    >
-      <div
-        className="w-full h-full flex justify-center items-center rounded"
-        onClick={() => onOccupancyChange(level, index, occupancy ? 0 : 1)}
-      >
-        <div
-          className={cn(
-            'w-12 h-12 bg-violet-500 rounded-full outline outline-8 outline-offset-4',
-            occupancy ? ' outline-white' : ' outline-transparent',
-          )}
-        />
-      </div>
-      <div
-        className={cn(
-          'w-full h-full flex justify-center items-center rounded',
-          isCurrentTarget ? 'bg-red-600' : 'bg-red-600/0',
-        )}
-        onClick={() => {
-          onCurrentTargetClick({ level, index });
+    <group position={position}>
+      {/* Larger invisible mesh for better touch target */}
+      <mesh
+        onClick={handleClick}
+        position={[0, 0, 0.01]}
+        userData={{
+          address: {
+            index: branchNumber,
+            type: ScoreAssistGoalType.CORAL,
+          },
         }}
       >
-        <MapPin
-          className={cn(
-            'h-10 w-10',
-            isCurrentTarget
-              ? 'text-white animate-ping'
-              : 'text-white/20 animate-none',
-          )}
+        <circleGeometry args={[0.16, 32]} />
+        <meshBasicMaterial transparent opacity={0.05} />
+      </mesh>
+
+      {/* Visible branch mesh */}
+      <mesh raycast={() => null} ref={meshRef}>
+        <circleGeometry args={[0.042164, 32]} />
+        <meshStandardMaterial
+          color="#C4618C"
+          emissive="#000000"
+          emissiveIntensity={0}
         />
-      </div>
-    </div>
+      </mesh>
+    </group>
+  );
+}
+
+// Animated branch that uses the shared animation factor
+function AnimatedBranch({ position, branchNumber }: BranchProps) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const pulseFactor = useAnimationFactor();
+
+  // Apply the animation factor directly
+  useEffect(() => {
+    if (meshRef.current) {
+      meshRef.current.scale.set(pulseFactor, pulseFactor, pulseFactor);
+    }
+  }, [pulseFactor]);
+
+  return (
+    <group position={position}>
+      {/* Larger invisible mesh for better touch target */}
+      <mesh
+        position={[0, 0, 0.01]}
+        userData={{
+          address: {
+            index: branchNumber,
+            type: ScoreAssistGoalType.CORAL,
+          },
+        }}
+      >
+        <circleGeometry args={[0.16, 32]} />
+        <meshBasicMaterial transparent opacity={0.5} color={'#FFF000'} />
+      </mesh>
+
+      {/* Visible branch mesh */}
+      <mesh ref={meshRef} raycast={() => null}>
+        <circleGeometry args={[0.042164, 32]} />
+        <meshStandardMaterial
+          color="#FFFF00"
+          emissive="#FFFF00"
+          emissiveIntensity={0.8}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+// Branch component that conditionally renders either static or animated version
+export function Branch({ position, branchNumber }: BranchProps) {
+  const store = useReefStore();
+  const { currentTarget } = store();
+  const isCurrentTarget = useMemo(
+    () =>
+      currentTarget?.type === ScoreAssistGoalType.CORAL &&
+      currentTarget.index === branchNumber,
+    [currentTarget, branchNumber]
+  );
+
+  // Conditionally render either the animated or static branch
+  return isCurrentTarget ? (
+    <AnimatedBranch position={position} branchNumber={branchNumber} />
+  ) : (
+    <StaticBranch position={position} branchNumber={branchNumber} />
   );
 }

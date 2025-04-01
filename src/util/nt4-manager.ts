@@ -62,6 +62,7 @@ export class Nt4Manager {
         this.warned = false;
         // TODO: Ensure temporarily losing network connection to the same server doesn't cause a crash
         this.server.publishNewTopic('/scoreassist/goto', 'string');
+        this.server.publishNewTopic('/scoreassist/climbPrep', 'boolean');
         this.setConnected(true);
       },
       () => {
@@ -75,6 +76,10 @@ export class Nt4Manager {
 
   public publishNewGoTo(pose: string) {
     this.server.addSample('/scoreassist/goto', pose);
+  }
+
+  public publishClimbPrep(climbPrep: boolean) {
+    this.server.addSample('/scoreassist/climbPrep', climbPrep);
   }
 }
 
