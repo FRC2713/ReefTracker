@@ -133,7 +133,7 @@ export const Scene2D = forwardRef<Group>((props, ref) => {
             <meshBasicMaterial transparent opacity={0.1} color={'yellow'} />
           </mesh>
           <mesh
-            ref={segment3Ref}
+            ref={segment2Ref}
             onPointerEnter={() => handlePointerEnterSegment(2)}
             onPointerLeave={() => handlePointerLeaveSegment(2)}
           >
@@ -149,7 +149,7 @@ export const Scene2D = forwardRef<Group>((props, ref) => {
             <meshBasicMaterial transparent opacity={0.1} color={'yellow'} />
           </mesh>
           <mesh
-            ref={segment2Ref}
+            ref={segment3Ref}
             onPointerEnter={() => handlePointerEnterSegment(3)}
             onPointerLeave={() => handlePointerLeaveSegment(3)}
           >
